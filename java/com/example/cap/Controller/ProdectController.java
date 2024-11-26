@@ -52,7 +52,7 @@ public class ProdectController {
     /// /////////////////////////////
     /// 1
     @PostMapping("/rate/{id}/{rate}")
-    public ResponseEntity rateProduct(@PathVariable String id, @PathVariable Integer rate) {
+    public ResponseEntity rateProduct(@PathVariable String id, @PathVariable Integer rate ) {
         if (rate == null || rate < 1 || rate > 5) {
             return ResponseEntity.status(400).body(new ApiResponce("Invalid rating value. Rating must be between 1 and 5."));
         }

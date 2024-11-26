@@ -64,10 +64,10 @@ public String addRating(String id, int rating) {
 public Integer getRating(String id) {
     for (Product product : products) {
         if (product.getId().equalsIgnoreCase(id)) {
-            return product.getRating(); // إعادة التقييم الحالي
+            return product.getRating();
         }
     }
-    return null; // إذا لم يتم العثور على المنتج
+    return null;
 }
 
 public ArrayList<Product> getProductsByCategory(String categoryid){

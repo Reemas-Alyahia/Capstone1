@@ -54,9 +54,9 @@ public ResponseEntity givto(@PathVariable String iduser,@PathVariable String mid
         return ResponseEntity.status(200).body(result);
 }
 /// //////////////
-    @PostMapping("/add-offer/{productId}/{discount}")
-    public ResponseEntity addOffer(@PathVariable String productId, @PathVariable double discount) {
-        String message = merchantService.addOffer(productId, discount);
+    @PostMapping("/add-offer/{mid}/{productId}/{discount}")
+    public ResponseEntity addOffer(@PathVariable String mid, @PathVariable String  productId,@PathVariable double discount) {
+        String message = merchantService.addOffer(mid, productId,discount);
         return ResponseEntity.status(200).body(new ApiResponce(message));
     }
     @GetMapping("/oferDet/{catgoryId}")

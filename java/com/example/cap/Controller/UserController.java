@@ -53,7 +53,23 @@ public class UserController {
         String result = userService.buy(userId, productId, merchantId);
         return ResponseEntity.status(200).body(result);
     }
+    @PostMapping("/return/{userId}/{productId}/{merchantId}")
+    public ResponseEntity returnProduct(@PathVariable String userId, @PathVariable String productId, @PathVariable String merchantId) {
+        String message = userService.returnProduct(userId, productId, merchantId);
+        return ResponseEntity.status(200).body(message);
 
+    }
+
+    @PostMapping("/transfer/{fromUserId}/{toUserId}/{amount}")
+    public ResponseEntity<String> transferBalance(@PathVariable String fromUserId, @PathVariable String toUserId, @PathVariable double amount) {
+        boolean success = userService.transferBalance(fromUserId, toUserId, amount);
+        if (success) {
+            return ResponseEntity.ok("Balance transferred successfully!");
+        } else {
+            return ResponseEntity.badRequest().body("Transfer failed! Check user IDs or balance.");
+        }
+    }
+/// ///extra
 @PutMapping("/reset/{email}/{pass}")
     public ResponseEntity resetPasswords(@PathVariable String email,@PathVariable String pass){
         String result=userService.resetPasswords(email,pass);

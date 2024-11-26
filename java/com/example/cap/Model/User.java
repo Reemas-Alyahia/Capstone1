@@ -31,5 +31,7 @@ public class User {
 
     //////
     private ArrayList<String>wishlist=new ArrayList<>();
+    private ArrayList<String> purchaseHistory = new ArrayList<>(); // سجل المشتريات
+
 
 }

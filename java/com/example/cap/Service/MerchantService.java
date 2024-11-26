@@ -66,28 +66,33 @@ if(merchants.get(i).getId().equalsIgnoreCase(id)){
      foundUser.setBalance(foundUser.getBalance() + amount);
 
 
-     return "Gift card" + amount + "added successfully! for user"+iduser+"and new balance is"+foundUser.getBalance();
+     return "Gift card : " + amount + " added successfully! for user: "+iduser+" and new balance is:  "+foundUser.getBalance();
  }
 
 
  /// //////////////2
- public String addOffer(String productId, double discountPercentage) {
+ public String addOffer(String adminid ,String productId, double discountPercentage) {
+    User found=userService.findUser(adminid);
+    if(!found.getRole().equalsIgnoreCase("Admin")){
+        return "Sorry, only Admin can change the balance.";
+
+    }
      if (discountPercentage < 1 || discountPercentage > 100) {
          return "Discount percentage must be between 1% and 100%.";
      }
 
-     Product found = prodectServi.findPrudect(productId);
-     if (found == null) {
+     Product foundP = prodectServi.findPrudect(productId);
+     if (foundP == null) {
          return "Sorry, no product found with the provided ID.";
      }
 
-     double discountedPrice = found.getPrice() - (found.getPrice() * discountPercentage / 100);
+     double discountedPrice = foundP.getPrice() - (foundP.getPrice() * discountPercentage / 100);
      if (discountedPrice <= 0) {
          return "Discount is too high, resulting in an invalid price.";
      }
 
-     found.setPrice((int) discountedPrice);
-     found.setHasDiscount(true); // لتحديد أن المنتج يحتوي على خصم
+     foundP.setPrice((int) discountedPrice);
+     foundP.setHasDiscount(true);
      return "Discount applied successfully! New price for product ID " + productId + " is: " + discountedPrice;
  }
 

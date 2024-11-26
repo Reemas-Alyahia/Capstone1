@@ -54,6 +54,8 @@ public class UserService {
              return null;
  }
 
+// /////////
+
     public String buy(String userId, String productId, String merchantId) {
         User user = null;
         for (User u : users) {
@@ -65,10 +67,12 @@ public class UserService {
         if (user == null) {
             return "User is not found";
         }
+
         Product product = prodectServi.findPrudect(productId);
         if (product == null) {
             return "Cannot find the product";
         }
+
         MerchantStock stock = merchantStockService.findstock(merchantId, productId);
 
         if (stock == null || stock.getStock() <= 0) {
@@ -78,23 +82,85 @@ public class UserService {
         if (user.getBalance() < product.getPrice()) {
             return "Insufficient balance";
         }
+
         user.setBalance(user.getBalance() - product.getPrice());
         stock.setStock(stock.getStock() - 1);
+
+        user.getPurchaseHistory().add(productId + ":" + merchantId);
+
         return "Purchase successful ,, Remaining balance: " + user.getBalance() + ", Remaining stock: " + stock.getStock();
     }
-
-
-/// /////4
-    public String resetPasswords(String email,String pass){
-        for (int i = 0; i < users.size(); i++) {
-            if(users.get(i).getEmail().equalsIgnoreCase(email)){
-                users.get(i).setPassword(pass);
-                return "Your password has been reset successfully.";
-            }
-
+/// //////
+public String returnProduct(String userId, String productId, String merchantId) {
+    User user = null;
+    for (User u : users) {
+        if (u.getId().equalsIgnoreCase(userId)) {
+            user = u;
+            break;
         }
-        return "User with the provided email not found.";
     }
+    if (user == null) {
+        return "User is not found";
+    }
+
+    String purchaseEntry = productId + ":" + merchantId;
+    if (!user.getPurchaseHistory().contains(purchaseEntry)) {
+        return "Product was not purchased or wrong merchant.";
+    }
+
+    Product product = prodectServi.findPrudect(productId);
+    if (product == null) {
+        return "Cannot find the product";
+    }
+
+    MerchantStock stock = merchantStockService.findstock(merchantId, productId);
+    if (stock == null) {
+        return "Merchant stock not found for this product.";
+    }
+
+    user.setBalance(user.getBalance() + product.getPrice());
+    stock.setStock(stock.getStock() + 1);
+
+    user.getPurchaseHistory().remove(purchaseEntry);
+
+    return "Product returned successfully. Updated balance: " + user.getBalance() + ", Updated stock: " + stock.getStock();
+}
+
+
+
+    ///
+    public boolean transferBalance(String fromUserId, String toUserId, double amount) {
+        if (amount <= 0) {
+            return false;
+        }
+
+        User send = null;
+        User receve= null;
+
+        for (User user : users) {
+            if (user.getId().equals(fromUserId)) {
+                send = user;
+            }
+            if (user.getId().equals(toUserId)) {
+                receve = user;
+            }
+        }
+
+        if (send == null || receve == null) {
+            return false;
+        }
+
+        if (send.getBalance() < amount) {
+            return false;
+        }
+
+        send.setBalance((int) (send.getBalance() - amount));
+        receve.setBalance((int) (receve.getBalance() + amount));
+
+        return true;
+    }
+
+
     public String addProductToWishlist(String userId, String productId) {
         User user = findUser(userId);
         if (user == null) {
@@ -163,7 +229,16 @@ public boolean changeUsername(String id,String oldname,String newname){
     }
 
 
+    public String resetPasswords(String email,String pass){
+        for (int i = 0; i < users.size(); i++) {
+            if(users.get(i).getEmail().equalsIgnoreCase(email)){
+                users.get(i).setPassword(pass);
+                return "Your password has been reset successfully.";
+            }
 
+        }
+        return "User with the provided email not found.";
+    }
 
 
 
